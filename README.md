@@ -1,12 +1,16 @@
 # glacier
 automata derived signal composer tool
 
-builds compositions of real valued signals 
+builds and dissects compositions of real valued signals 
 
-# uses
+# what
+signals with weird properties like being differentiable nowhere and complex curve geometries can be defined in terms of automata relations like rewrite rules, recursive relations, or state machines and their group-theoretic counterpart frameworks
+
+# why
 * building non-differentiable functions or relation spaces
-* answer set relational targets for digital and analog signal design
 * recurrence relation analysis
+* targets for digital and analog design
+* material design stuff maybe
 
 # to do
 * window function on canvas
