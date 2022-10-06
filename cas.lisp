@@ -195,3 +195,89 @@ enter (= x 2)
 (= (d/dx (sec x) (* (sec x) (tan x))))
   
 (= (d/dx (cot x) (* -1 (csc2 x))))
+
+;; sinh, cosh, tanh, csch, sech, tcoth
+
+
+(= (integral (* u dv))
+   (- (* u v) (integral (* v dv))))
+
+(= (integral (* (sin u) du))
+   (+ (* -1 (cos u)) C))
+
+(= (integral (* (csc u) (cot u) du))
+   (+ (* -1 (csc u)) C))
+
+(= (integral (/ du (sqrt (- (expt a 2) (expt u 2)))))
+   (+ (sin-1 (/ u a)) §³))
+
+;; Tangents
+
+
+;; Tangents
+
+(= (derivative (f x))
+   (lim (-> h 0)
+	(/ (- (f (+ x h)) (f x))
+	   h)))
+
+(find f'
+      if (f x) = (/ (- 1 x) (+ 2 x)))
+      
+;; replace (f x) with (/ (- 1 x) (+ 2 x))
+;; 
+
+(lim (-> h 0)
+     (/ (- (/ (- 1 (+ x h)) (+ 2 (+ x h)))
+	   (/ (- 1 x) (+ 2 x)))
+	h))
+
+(lim (-> h 0)
+     (/ (- (/ (- 1 (+ x h)) (+ 2 (+ x h)))
+	   (/ (- 1 x) (+ 2 x)))
+	h))
+
+;; can't set h to 0
+
+;; use identity
+(= (/ (- (/ a b) (/ c d))
+      g)
+   (* (/ (- (* a d) (* b c))
+	 (* b d g))) )
+
+;; replace
+(/ (- ( (- 1 (+ x h)) (+ 2 (+ x h)))
+      (/ (- 1 x) (+ 2 x)))
+   h)
+;; with
+(/ (- (* (- 1 (+ x h)) (+ 2 x))
+      (* (- 1 x) (+ 2 (+ x h))))   
+   (* (+ 2 x h) (+ 2 x)) h)
+
+;; still dividing by h
+;; simplify top term
+(- (* (- 1 (+ x h)) (+ 2 x))
+   (* (- 1 x) (+ 2 (+ x h))))
+;; to
+(- (- 2 x (* 2 h) (expt x 2) (* x h))
+   (- (+ 2 h) x (expt x 2) (x h)))
+
+;; simplies to
+(* -1 3 h)
+
+;; equation now
+(/ (* -1 3 h)
+   (* (+ 2 x h) (+ 2 x) h))
+
+;; h cancels out
+(/ (* -1 3)
+   (* (+ 2 x h) (+ 2 x)))
+
+;; can plug h=0 in
+(/ (* -1 3)
+   (* (+ 2 x) (+ 2 x)))
+
+;; (* (+ 2 x) (+ 2 x)) simplifies to
+;; (expt (+ 2 x) 2)
+(/ (* -1 3)
+   (expt (+ 2 x) 2))
