@@ -281,3 +281,17 @@ enter (= x 2)
 ;; (expt (+ 2 x) 2)
 (/ (* -1 3)
    (expt (+ 2 x) 2))
+
+
+(defun search-tree (tree symbol path)
+  (cond
+    ((null tree) nil)
+    ((and (listp tree)
+          (eq (car tree) symbol))
+     (list (cons (cons 'quote path) symbol))) ;; found symbol
+    ((listp tree)
+     (let* ((new-path (append path (list 'car))) ;; build path
+            (car-nodes (search-tree (car tree) symbol new-path))
+            (cdr-nodes (search-tree (cdr tree) symbol (append path (list 'cdr)))))
+       (append car-nodes cdr-nodes))) ;; add to output list of found matches
+    (t nil)))
