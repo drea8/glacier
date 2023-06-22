@@ -295,3 +295,5 @@ enter (= x 2)
             (cdr-nodes (search-tree (cdr tree) symbol (append path (list 'cdr)))))
        (append car-nodes cdr-nodes))) ;; add to output list of found matches
     (t nil)))
+
+(search-tree '(f x) 'x nil)
