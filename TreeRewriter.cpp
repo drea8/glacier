@@ -8,9 +8,24 @@ struct ExpressionNode {
     std::shared_ptr<ExpressionNode> left;
     std::shared_ptr<ExpressionNode> right;
 
-    ExpressionNode(const std::string& op, std::shared_ptr<ExpressionNode> l = nullptr, std::shared_ptr<ExpressionNode> r = nullptr)
+    ExpressionNode(const std::string& op, std::shared_ptr<ExpressionNode> l = nullptr,
+        std::shared_ptr<ExpressionNode> r = nullptr)
         : operation(op), left(l), right(r) {}
 };
+
+void swapLeftAndRight(std::shared_ptr<ExpressionNode>& root) {
+    if (!root) {
+        return;
+    }
+
+    // Swap the left and right child nodes (if they exist)
+    std::swap(root->left, root->right);
+
+    // Recursively swap the child subtrees
+    swapLeftAndRight(root->left);
+    swapLeftAndRight(root->right);
+    // std::cout << "Tree Left and Right swapped at " << root->operation << " " << std::endl;
+}
 
 double evaluateExpression(const std::shared_ptr<ExpressionNode>& root, const std::string& variable, double value) {
     if (!root) {
@@ -39,8 +54,33 @@ double evaluateExpression(const std::shared_ptr<ExpressionNode>& root, const std
             exit(1);
         }
     }
+    // assumes numeric value of string, returns numeric value converted from string
     else {
         return std::stod(root->operation);
+    }
+}
+
+void printExpression(const std::shared_ptr<ExpressionNode>& root) {
+    if (!root) {
+        return;
+    }
+
+    if (root->left || root->right) {
+        std::cout << "(";
+    }
+
+    std::cout << root->operation;
+
+    if (root->left || root->right) {
+        if (root->left) {
+            std::cout << " ";
+            printExpression(root->left);
+        }
+        if (root->right) {
+            std::cout << " ";
+            printExpression(root->right);
+        }
+        std::cout << ")";
     }
 }
 
@@ -49,20 +89,26 @@ int main() {
     std::shared_ptr<ExpressionNode> expressionTree =
         std::make_shared<ExpressionNode>("+",
             std::make_shared<ExpressionNode>("*",
-                std::make_shared<ExpressionNode>("2"),
+                std::make_shared<ExpressionNode>("3"),
                 std::make_shared<ExpressionNode>("x")
             ),
-            std::make_shared<ExpressionNode>("3")
+            std::make_shared<ExpressionNode>("2")
         );
 
- 
+    swapLeftAndRight(expressionTree);
+    printExpression(expressionTree);
+    std::cout << "Testing Swap Expression..." << std::endl;
+    swapLeftAndRight(expressionTree);
+    printExpression(expressionTree);
     std::string variable = "x";
+
     double value = 5.0;
 
     
-    double result = evaluateExpression(expressionTree, variable, value);
+    double result = evaluateExpression(expressionTree,
+                                        variable, value);
 
-    std::cout << "Result: " << result << std::endl;
+    std::cout << "Tree Result Rewritten: " << result << std::endl;
 
     return 0;
 }
