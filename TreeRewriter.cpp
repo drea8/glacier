@@ -1,59 +1,68 @@
-// TreeRewriter.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <string>
+#include <memory>
 
 
-struct TreeNode {
-    int data;
-    TreeNode* left;
-    TreeNode* right;
+struct ExpressionNode {
+    std::string operation; 
+    std::shared_ptr<ExpressionNode> left;
+    std::shared_ptr<ExpressionNode> right;
 
-    TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+    ExpressionNode(const std::string& op, std::shared_ptr<ExpressionNode> l = nullptr, std::shared_ptr<ExpressionNode> r = nullptr)
+        : operation(op), left(l), right(r) {}
 };
 
-TreeNode* rewriteTree(TreeNode* node, short operation, int value) {
-    if (node == nullptr) {
-        return nullptr;
+double evaluateExpression(const std::shared_ptr<ExpressionNode>& root, const std::string& variable, double value) {
+    if (!root) {
+        return 0.0;
     }
 
-    if (operation == 0) {
-        node->data += value;
+    if (root->operation == variable) {
+        return value;
     }
-    
-
-    node->left = rewriteTree(node->left, operation, value);
-    node->right = rewriteTree(node->right, operation, value);
-
-    return node;
-}
-
-void printTree(TreeNode* node) {
-    if (node == nullptr) {
-        return;
+    else if (root->operation == "+") {
+        return evaluateExpression(root->left, variable, value) + evaluateExpression(root->right, variable, value);
     }
-
-    printTree(node->left);
-    std::cout << node->data << " ";
-    printTree(node->right);
+    else if (root->operation == "-") {
+        return evaluateExpression(root->left, variable, value) - evaluateExpression(root->right, variable, value);
+    }
+    else if (root->operation == "*") {
+        return evaluateExpression(root->left, variable, value) * evaluateExpression(root->right, variable, value);
+    }
+    else if (root->operation == "/") {
+        double denominator = evaluateExpression(root->right, variable, value);
+        if (denominator != 0.0) {
+            return evaluateExpression(root->left, variable, value) / denominator;
+        }
+        else {
+            std::cerr << "Error: Division by zero" << std::endl;
+            exit(1);
+        }
+    }
+    else {
+        return std::stod(root->operation);
+    }
 }
 
 int main() {
-    TreeNode* root = new TreeNode(1);
-    root->left = new TreeNode(2);
-    root->right = new TreeNode(3);
-    root->left->left = new TreeNode(4);
-    root->left->right = new TreeNode(5);
+    
+    std::shared_ptr<ExpressionNode> expressionTree =
+        std::make_shared<ExpressionNode>("+",
+            std::make_shared<ExpressionNode>("*",
+                std::make_shared<ExpressionNode>("2"),
+                std::make_shared<ExpressionNode>("x")
+            ),
+            std::make_shared<ExpressionNode>("3")
+        );
 
-    std::cout << "Original tree: ";
-    printTree(root);
-    std::cout << std::endl;
+ 
+    std::string variable = "x";
+    double value = 5.0;
 
-    root = rewriteTree(root, 0, 10);
+    
+    double result = evaluateExpression(expressionTree, variable, value);
 
-    std::cout << "Rewritten tree: ";
-    printTree(root);
-    std::cout << std::endl;
+    std::cout << "Result: " << result << std::endl;
 
     return 0;
 }
