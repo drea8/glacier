@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
-
+#include <vector>
 
 struct ExpressionNode {
     std::string operation; 
@@ -64,13 +64,13 @@ void printExpression(const std::shared_ptr<ExpressionNode>& root) {
     if (!root) {
         return;
     }
-
+    // if it is not an atom, show as list
     if (root->left || root->right) {
         std::cout << "(";
     }
 
     std::cout << root->operation;
-
+ 
     if (root->left || root->right) {
         if (root->left) {
             std::cout << " ";
@@ -85,7 +85,9 @@ void printExpression(const std::shared_ptr<ExpressionNode>& root) {
 }
 
 int main() {
-    
+    std::vector<std::shared_ptr<ExpressionNode>> expressionList;
+
+
     std::shared_ptr<ExpressionNode> expressionTree =
         std::make_shared<ExpressionNode>("+",
             std::make_shared<ExpressionNode>("*",
@@ -97,6 +99,9 @@ int main() {
 
     swapLeftAndRight(expressionTree);
     printExpression(expressionTree);
+
+    expressionList.push_back(expressionTree);
+
     std::cout << "Testing Swap Expression..." << std::endl;
     swapLeftAndRight(expressionTree);
     printExpression(expressionTree);
